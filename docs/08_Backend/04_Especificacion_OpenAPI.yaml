@@ -1,0 +1,411 @@
+openapi: 3.1.0
+info:
+  title: API vertical inicial - Sistema de Gestión Documental
+  version: 0.1.0
+  summary: Contrato borrador para contexto, documento, carga segura y radicación.
+  description: >-
+    Código documental GDP-BE-004. Estado: Borrador contractual. Fecha: 2026-07-16.
+    Propietario: [ARQUITECTO]. Revisores: [RESPONSABLE_SEGURIDAD],
+    [ANALISTA_REQUISITOS], [LIDER_QA]. Aprobador: [COMITE_ARQUITECTURA].
+    No implementa autenticación propia; utiliza Keycloak OIDC/OAuth 2.0.
+    X-Tenant-ID expresa contexto solicitado y nunca sustituye la autorización servidor.
+  contact:
+    name: "[ARQUITECTO]"
+servers:
+  - url: https://api.example.invalid
+    description: URL ilustrativa; pendiente por ambiente
+tags:
+  - name: Context
+  - name: Documents
+  - name: Uploads
+  - name: Correspondence
+security:
+  - keycloakOAuth: []
+paths:
+  /v1/me/contexts:
+    get:
+      operationId: listMyTenantContexts
+      tags: [Context]
+      summary: Listar contextos tenant autorizados
+      responses:
+        "200":
+          description: Membresías activas visibles para la identidad.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/TenantContext"
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "500": { $ref: "#/components/responses/InternalError" }
+  /v1/documents:
+    post:
+      operationId: createDocument
+      tags: [Documents]
+      summary: Crear documento lógico
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreateDocumentRequest" }
+      responses:
+        "201":
+          description: Documento lógico creado en estado DRAFT.
+          headers:
+            Location:
+              schema: { type: string, format: uri-reference }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Document" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/ValidationFailed" }
+        "500": { $ref: "#/components/responses/InternalError" }
+  /v1/documents/{documentId}/uploads:
+    post:
+      operationId: requestDocumentUpload
+      tags: [Uploads]
+      summary: Solicitar sesión multipart en cuarentena
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/DocumentId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RequestUploadRequest" }
+      responses:
+        "201":
+          description: Sesión limitada a la carga declarada.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/UploadSession" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/ValidationFailed" }
+  /v1/documents/{documentId}/uploads/{uploadId}/confirm:
+    post:
+      operationId: confirmDocumentUpload
+      tags: [Uploads]
+      summary: Confirmar carga multipart e iniciar procesamiento
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/DocumentId"
+        - $ref: "#/components/parameters/UploadId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ConfirmUploadRequest" }
+      responses:
+        "202":
+          description: Carga confirmada en cuarentena; procesamiento pendiente.
+          headers:
+            Location:
+              schema: { type: string, format: uri-reference }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ProcessingStatus" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/ValidationFailed" }
+        "503": { $ref: "#/components/responses/Unavailable" }
+  /v1/documents/{documentId}/processing-status:
+    get:
+      operationId: getDocumentProcessingStatus
+      tags: [Documents]
+      summary: Consultar estado de procesamiento documental
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+        - $ref: "#/components/parameters/DocumentId"
+      responses:
+        "200":
+          description: Estado autorizado del documento y su versión más reciente.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ProcessingStatus" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /v1/correspondences/incoming:
+    post:
+      operationId: createIncomingCorrespondence
+      tags: [Correspondence]
+      summary: Crear radicación de entrada
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreateIncomingCorrespondenceRequest" }
+      responses:
+        "201":
+          description: Radicación confirmada con consecutivo único.
+          headers:
+            Location:
+              schema: { type: string, format: uri-reference }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Correspondence" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/ValidationFailed" }
+        "503": { $ref: "#/components/responses/Unavailable" }
+  /v1/correspondences/{correspondenceId}:
+    get:
+      operationId: getCorrespondence
+      tags: [Correspondence]
+      summary: Consultar radicación autorizada
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+        - name: correspondenceId
+          in: path
+          required: true
+          schema: { $ref: "#/components/schemas/OpaqueId" }
+      responses:
+        "200":
+          description: Radicación encontrada y visible.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Correspondence" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+components:
+  securitySchemes:
+    keycloakOAuth:
+      type: oauth2
+      description: Authorization Code con PKCE; URLs definitivas dependen del ambiente.
+      flows:
+        authorizationCode:
+          authorizationUrl: https://identity.example.invalid/realms/gd/protocol/openid-connect/auth
+          tokenUrl: https://identity.example.invalid/realms/gd/protocol/openid-connect/token
+          scopes:
+            openid: Identidad OIDC
+            profile: Perfil mínimo
+  parameters:
+    TenantId:
+      name: X-Tenant-ID
+      in: header
+      required: true
+      description: Tenant solicitado; el servidor valida membresía y permiso y no confía en este valor por sí solo.
+      schema: { $ref: "#/components/schemas/OpaqueId" }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        minLength: 16
+        maxLength: 128
+        pattern: "^[A-Za-z0-9._~-]+$"
+    DocumentId:
+      name: documentId
+      in: path
+      required: true
+      schema: { $ref: "#/components/schemas/OpaqueId" }
+    UploadId:
+      name: uploadId
+      in: path
+      required: true
+      schema: { $ref: "#/components/schemas/OpaqueId" }
+  responses:
+    Unauthorized:
+      description: Autenticación ausente o inválida.
+      headers:
+        WWW-Authenticate: { schema: { type: string } }
+      content:
+        application/problem+json: { schema: { $ref: "#/components/schemas/Problem" } }
+    Forbidden:
+      description: La identidad no tiene autorización visible.
+      content:
+        application/problem+json: { schema: { $ref: "#/components/schemas/Problem" } }
+    NotFound:
+      description: Recurso inexistente o no visible según política anti-enumeración.
+      content:
+        application/problem+json: { schema: { $ref: "#/components/schemas/Problem" } }
+    Conflict:
+      description: Conflicto de estado, unicidad, concurrencia o idempotencia.
+      content:
+        application/problem+json: { schema: { $ref: "#/components/schemas/Problem" } }
+    ValidationFailed:
+      description: La solicitud incumple reglas de validación.
+      content:
+        application/problem+json: { schema: { $ref: "#/components/schemas/Problem" } }
+    Unavailable:
+      description: Dependencia temporalmente no disponible.
+      content:
+        application/problem+json: { schema: { $ref: "#/components/schemas/Problem" } }
+    InternalError:
+      description: Error inesperado sanitizado.
+      content:
+        application/problem+json: { schema: { $ref: "#/components/schemas/Problem" } }
+  schemas:
+    OpaqueId:
+      type: string
+      minLength: 20
+      maxLength: 64
+      pattern: "^[A-Za-z0-9_-]+$"
+    TenantContext:
+      type: object
+      additionalProperties: false
+      required: [tenantId, organizationName, membershipStatus]
+      properties:
+        tenantId: { $ref: "#/components/schemas/OpaqueId" }
+        organizationName: { type: string, minLength: 1, maxLength: 200 }
+        membershipStatus: { type: string, enum: [ACTIVE] }
+    CreateDocumentRequest:
+      type: object
+      additionalProperties: false
+      required: [documentTypeId, title]
+      properties:
+        documentTypeId: { $ref: "#/components/schemas/OpaqueId" }
+        title: { type: string, minLength: 1, maxLength: 300 }
+        metadata:
+          type: object
+          description: Debe cumplir el schema versionado del tipo documental.
+          maxProperties: 100
+          additionalProperties: true
+    Document:
+      type: object
+      additionalProperties: false
+      required: [id, documentTypeId, title, status, version]
+      properties:
+        id: { $ref: "#/components/schemas/OpaqueId" }
+        documentTypeId: { $ref: "#/components/schemas/OpaqueId" }
+        title: { type: string }
+        status: { type: string, enum: [DRAFT, QUARANTINED, PROCESSING, AVAILABLE, REJECTED] }
+        version: { type: integer, minimum: 1 }
+    RequestUploadRequest:
+      type: object
+      additionalProperties: false
+      required: [fileName, mediaType, sizeBytes, partCount]
+      properties:
+        fileName: { type: string, minLength: 1, maxLength: 255 }
+        mediaType: { type: string, minLength: 3, maxLength: 100 }
+        sizeBytes: { type: integer, minimum: 1 }
+        partCount: { type: integer, minimum: 1, maximum: 10000 }
+        declaredChecksum: { type: string, minLength: 16, maxLength: 256 }
+    UploadPart:
+      type: object
+      additionalProperties: false
+      required: [partNumber, uploadUrl]
+      properties:
+        partNumber: { type: integer, minimum: 1 }
+        uploadUrl: { type: string, format: uri }
+    UploadSession:
+      type: object
+      additionalProperties: false
+      required: [uploadId, expiresAt, parts]
+      properties:
+        uploadId: { $ref: "#/components/schemas/OpaqueId" }
+        expiresAt: { type: string, format: date-time }
+        parts:
+          type: array
+          minItems: 1
+          items: { $ref: "#/components/schemas/UploadPart" }
+    CompletedPart:
+      type: object
+      additionalProperties: false
+      required: [partNumber, etag]
+      properties:
+        partNumber: { type: integer, minimum: 1 }
+        etag: { type: string, minLength: 1, maxLength: 256 }
+    ConfirmUploadRequest:
+      type: object
+      additionalProperties: false
+      required: [parts]
+      properties:
+        parts:
+          type: array
+          minItems: 1
+          maxItems: 10000
+          items: { $ref: "#/components/schemas/CompletedPart" }
+        checksum: { type: string, minLength: 16, maxLength: 256 }
+    ProcessingStatus:
+      type: object
+      additionalProperties: false
+      required: [documentId, status, updatedAt]
+      properties:
+        documentId: { $ref: "#/components/schemas/OpaqueId" }
+        versionId: { $ref: "#/components/schemas/OpaqueId" }
+        status: { type: string, enum: [QUARANTINED, SCANNING, HASHING, AVAILABLE, REJECTED, FAILED] }
+        updatedAt: { type: string, format: date-time }
+        retryable: { type: boolean }
+    PartyInput:
+      type: object
+      additionalProperties: false
+      required: [name]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 200 }
+        email: { type: string, format: email, maxLength: 254 }
+    CreateIncomingCorrespondenceRequest:
+      type: object
+      additionalProperties: false
+      required: [documentId, channel, sender]
+      properties:
+        documentId: { $ref: "#/components/schemas/OpaqueId" }
+        channel: { type: string, enum: [WEB, EMAIL, PHYSICAL, OTHER] }
+        sender: { $ref: "#/components/schemas/PartyInput" }
+        subject: { type: string, minLength: 1, maxLength: 300 }
+    Correspondence:
+      type: object
+      additionalProperties: false
+      required: [id, number, direction, status, registeredAt, documentId]
+      properties:
+        id: { $ref: "#/components/schemas/OpaqueId" }
+        number: { type: string, minLength: 1, maxLength: 100 }
+        direction: { type: string, const: INCOMING }
+        status: { type: string, enum: [REGISTERED, DISTRIBUTED, IN_PROGRESS, CLOSED] }
+        registeredAt: { type: string, format: date-time }
+        documentId: { $ref: "#/components/schemas/OpaqueId" }
+    FieldError:
+      type: object
+      additionalProperties: false
+      required: [code, message]
+      properties:
+        field: { type: string }
+        code: { type: string }
+        message: { type: string }
+    Problem:
+      type: object
+      additionalProperties: true
+      required: [type, title, status, code, correlationId]
+      properties:
+        type: { type: string, format: uri-reference }
+        title: { type: string }
+        status: { type: integer, minimum: 400, maximum: 599 }
+        detail: { type: string }
+        instance: { type: string, format: uri-reference }
+        code: { type: string, pattern: "^[a-z][a-z0-9_.-]+$" }
+        correlationId: { type: string }
+        retryable: { type: boolean, default: false }
+        errors:
+          type: array
+          items: { $ref: "#/components/schemas/FieldError" }
+x-document-governance:
+  sources: [ADR-012, ADR-013, ADR-017, GDP-REQ-002, GDP-BE-003]
+  assumptions: [URLs y límites definitivos se fijan por ambiente y POC]
+  decisions: [REST, OpenAPI 3.1, Keycloak, RFC 9457, carga multipart directa]
+  pending: [dominio de tipos Problem, gateway, límites aprobados, schemas de metadatos]
+  history:
+    - version: 0.1.0
+      date: 2026-07-16
+      change: Contrato vertical inicial

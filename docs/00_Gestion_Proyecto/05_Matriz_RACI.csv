@@ -1,0 +1,38 @@
+Actividad,Patrocinador,Product Owner,Project Manager,Arquitecto,Líder Archivístico,Seguridad,Responsable Datos,Asesor Jurídico,Líder QA,Líder Operaciones,Cliente Piloto
+Patrocinio y decisiones estratégicas,R,C,I,I,C,C,C,C,I,I,C
+Presupuesto y recursos,R,A,C,I,I,I,I,I,I,I,I
+Priorización de requisitos,A,R,C,C,C,I,C,I,I,I,C
+Validación archivística,C,R,I,C,R,I,I,C,I,I,R
+Diseño técnico y ADR,C,C,I,R,C,R,C,I,C,C,I
+Seguridad y criptografía,C,C,I,R,I,R,C,C,C,C,I
+Protección de datos y privacidad,I,C,I,C,C,C,R,R,C,I,I
+Compliance normativo y legal,C,C,I,C,C,C,C,R,I,I,I
+Radicación entrada/salida,I,R,C,I,R,I,C,I,C,I,R
+Gestión de expedientes,I,R,C,C,R,I,C,I,C,I,R
+Identidad y acceso (IAM),I,C,C,R,I,R,C,C,C,I,I
+Búsqueda y recuperación,I,R,C,C,C,I,I,I,C,I,C
+Auditoría e integridad,C,C,I,C,C,R,C,C,C,I,I
+Consentimientos y solicitudes de titulares,C,C,I,I,C,C,R,R,C,I,I
+Notificaciones (correo),I,C,C,C,I,I,I,I,C,R,I
+Reportes y exportación,C,R,C,C,C,I,I,I,C,I,I
+Backup y restauración,C,I,I,I,I,I,I,I,C,R,I
+Cifrado y secretos,C,I,I,R,I,R,I,I,I,C,I
+Antivirus y cuarentena,C,C,I,C,I,R,I,I,C,R,I
+Testing (funcional/no funcional),I,C,I,C,C,C,C,I,R,C,R
+Testing de seguridad (OWASP ZAP),I,I,I,C,I,R,I,I,R,C,I
+Accesibilidad (WCAG),I,C,I,C,C,I,I,I,R,C,R
+Despliegue a producción,I,C,C,C,I,C,I,I,C,R,I
+Monitoreo y alertas,C,I,C,C,I,C,I,I,I,R,I
+Gestión de cambios,C,C,R,C,C,C,C,C,C,C,C
+Control de versiones,C,C,I,R,I,I,I,I,C,C,I
+Documentación técnica,I,C,R,R,C,C,C,I,C,C,I
+Documentación funcional,C,R,C,C,R,I,I,I,C,I,R
+Gestión de riesgos,R,C,R,C,C,C,C,C,C,C,C
+Comunicación con stakeholders,A,C,R,C,C,C,C,C,C,C,C
+Contratos y proveedores,R,C,C,C,C,C,C,R,I,C,I
+POC-001 (multitenancy/RLS),I,I,I,R,I,R,I,I,R,C,I
+POC-002 (pipeline documental),I,I,I,R,C,R,I,I,R,C,I
+Gate técnico MVP,A,R,C,R,C,R,C,C,R,C,I
+Gate legal/compliance,A,C,I,I,C,C,C,R,C,I,I
+Aceptación funcional MVP,I,R,C,C,R,I,I,I,C,I,R
+Leyenda: R = Responsable | A = Aprobador | C = Consultado | I = Informado

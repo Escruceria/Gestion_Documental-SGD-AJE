@@ -1,0 +1,253 @@
+asyncapi: 3.0.0
+info:
+  title: Contratos asíncronos del flujo vertical inicial
+  version: 0.1.0
+  description: >-
+    GDP-BE-016. Borrador contractual al 2026-07-16. Sobre portable para
+    EventBridge/SQS y RabbitMQ. Entrega at-least-once; consumidores idempotentes.
+defaultContentType: application/json
+servers:
+  aws:
+    host: "{region}.amazonaws.com"
+    protocol: https
+    description: Topología EventBridge/SQS aprovisionada por IaC.
+    variables:
+      region:
+        default: us-east-1
+  privateRabbitMq:
+    host: rabbitmq.internal:5671
+    protocol: amqps
+    description: RabbitMQ privado sobre TLS; host ilustrativo.
+channels:
+  documentVersionRegistered:
+    address: document.version.registered.v1
+    messages:
+      documentVersionRegistered:
+        $ref: "#/components/messages/DocumentVersionRegistered"
+  scanDocumentMalware:
+    address: processing.scan-document.v1
+    messages:
+      scanDocumentMalware:
+        $ref: "#/components/messages/ScanDocumentMalware"
+  documentMalwareScanCompleted:
+    address: document.malware.scan.completed.v1
+    messages:
+      documentMalwareScanCompleted:
+        $ref: "#/components/messages/DocumentMalwareScanCompleted"
+  documentHashComputed:
+    address: document.hash.computed.v1
+    messages:
+      documentHashComputed:
+        $ref: "#/components/messages/DocumentHashComputed"
+  correspondenceRegistered:
+    address: correspondence.registered.v1
+    messages:
+      correspondenceRegistered:
+        $ref: "#/components/messages/CorrespondenceRegistered"
+  sendNotification:
+    address: notification.send.v1
+    messages:
+      sendNotification:
+        $ref: "#/components/messages/SendNotification"
+operations:
+  publishDocumentVersionRegistered:
+    action: send
+    channel: { $ref: "#/channels/documentVersionRegistered" }
+    messages:
+      - $ref: "#/channels/documentVersionRegistered/messages/documentVersionRegistered"
+  consumeDocumentVersionRegistered:
+    action: receive
+    channel: { $ref: "#/channels/documentVersionRegistered" }
+    messages:
+      - $ref: "#/channels/documentVersionRegistered/messages/documentVersionRegistered"
+  sendScanDocumentMalware:
+    action: send
+    channel: { $ref: "#/channels/scanDocumentMalware" }
+    messages:
+      - $ref: "#/channels/scanDocumentMalware/messages/scanDocumentMalware"
+  consumeScanDocumentMalware:
+    action: receive
+    channel: { $ref: "#/channels/scanDocumentMalware" }
+    messages:
+      - $ref: "#/channels/scanDocumentMalware/messages/scanDocumentMalware"
+  publishDocumentMalwareScanCompleted:
+    action: send
+    channel: { $ref: "#/channels/documentMalwareScanCompleted" }
+  publishDocumentHashComputed:
+    action: send
+    channel: { $ref: "#/channels/documentHashComputed" }
+  publishCorrespondenceRegistered:
+    action: send
+    channel: { $ref: "#/channels/correspondenceRegistered" }
+  consumeSendNotification:
+    action: receive
+    channel: { $ref: "#/channels/sendNotification" }
+components:
+  messages:
+    DocumentVersionRegistered:
+      name: document.version.registered.v1
+      title: Versión documental registrada en cuarentena
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/Envelope"
+          - type: object
+            required: [payload]
+            properties:
+              payload: { $ref: "#/components/schemas/DocumentVersionPayload" }
+    ScanDocumentMalware:
+      name: processing.scan-document.v1
+      title: Ordenar escaneo antimalware
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/Envelope"
+          - type: object
+            required: [payload]
+            properties:
+              kind: { const: command }
+              payload: { $ref: "#/components/schemas/ScanCommandPayload" }
+    DocumentMalwareScanCompleted:
+      name: document.malware.scan.completed.v1
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/Envelope"
+          - type: object
+            required: [payload]
+            properties:
+              payload: { $ref: "#/components/schemas/MalwareResultPayload" }
+    DocumentHashComputed:
+      name: document.hash.computed.v1
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/Envelope"
+          - type: object
+            required: [payload]
+            properties:
+              payload: { $ref: "#/components/schemas/HashResultPayload" }
+    CorrespondenceRegistered:
+      name: correspondence.registered.v1
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/Envelope"
+          - type: object
+            required: [payload]
+            properties:
+              payload: { $ref: "#/components/schemas/CorrespondencePayload" }
+    SendNotification:
+      name: notification.send.v1
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/Envelope"
+          - type: object
+            required: [payload]
+            properties:
+              kind: { const: command }
+              payload: { $ref: "#/components/schemas/NotificationCommandPayload" }
+  schemas:
+    OpaqueId:
+      type: string
+      minLength: 20
+      maxLength: 64
+      pattern: "^[A-Za-z0-9_-]+$"
+    Envelope:
+      type: object
+      additionalProperties: false
+      required:
+        - messageId
+        - messageType
+        - messageVersion
+        - kind
+        - occurredAt
+        - tenantId
+        - correlationId
+        - producer
+        - contentType
+        - payload
+      properties:
+        messageId: { $ref: "#/components/schemas/OpaqueId" }
+        messageType: { type: string, minLength: 3, maxLength: 150 }
+        messageVersion: { type: integer, minimum: 1 }
+        kind: { type: string, enum: [event, command] }
+        occurredAt: { type: string, format: date-time }
+        tenantId: { $ref: "#/components/schemas/OpaqueId" }
+        correlationId: { $ref: "#/components/schemas/OpaqueId" }
+        causationId:
+          oneOf:
+            - $ref: "#/components/schemas/OpaqueId"
+            - type: "null"
+        producer: { type: string, minLength: 3, maxLength: 100 }
+        traceparent: { type: string, maxLength: 128 }
+        contentType: { const: application/json }
+        payload: { type: object }
+    DocumentVersionPayload:
+      type: object
+      additionalProperties: false
+      required: [documentId, versionId, objectRef, declaredMediaType, sizeBytes]
+      properties:
+        documentId: { $ref: "#/components/schemas/OpaqueId" }
+        versionId: { $ref: "#/components/schemas/OpaqueId" }
+        objectRef: { type: string, description: Referencia opaca; nunca URL prefirmada. }
+        declaredMediaType: { type: string }
+        sizeBytes: { type: integer, minimum: 1 }
+    ScanCommandPayload:
+      type: object
+      additionalProperties: false
+      required: [versionId, objectRef, scanPolicyVersion]
+      properties:
+        versionId: { $ref: "#/components/schemas/OpaqueId" }
+        objectRef: { type: string }
+        scanPolicyVersion: { type: string }
+    MalwareResultPayload:
+      type: object
+      additionalProperties: false
+      required: [versionId, verdict, engine, engineVersion]
+      properties:
+        versionId: { $ref: "#/components/schemas/OpaqueId" }
+        verdict: { type: string, enum: [CLEAN, MALICIOUS, ERROR, UNKNOWN] }
+        engine: { type: string }
+        engineVersion: { type: string }
+    HashResultPayload:
+      type: object
+      additionalProperties: false
+      required: [versionId, algorithm, hash]
+      properties:
+        versionId: { $ref: "#/components/schemas/OpaqueId" }
+        algorithm: { type: string }
+        hash: { type: string, minLength: 16, maxLength: 256 }
+    CorrespondencePayload:
+      type: object
+      additionalProperties: false
+      required: [correspondenceId, number, direction, documentId, registeredAt]
+      properties:
+        correspondenceId: { $ref: "#/components/schemas/OpaqueId" }
+        number: { type: string }
+        direction: { const: INCOMING }
+        documentId: { $ref: "#/components/schemas/OpaqueId" }
+        registeredAt: { type: string, format: date-time }
+    NotificationCommandPayload:
+      type: object
+      additionalProperties: false
+      required: [originEventId, templateCode, templateVersion, recipientRef]
+      properties:
+        originEventId: { $ref: "#/components/schemas/OpaqueId" }
+        templateCode: { type: string }
+        templateVersion: { type: integer, minimum: 1 }
+        recipientRef: { type: string, description: Referencia minimizada; no token ni secreto. }
+x-message-rules:
+  maximumPortableSizeBytes: 262144
+  delivery: at-least-once
+  producerPattern: transactional-outbox
+  consumerPattern: transactional-inbox
+  binaryPayloadsAllowed: false
+  presignedUrlsAllowed: false
+x-document-governance:
+  owner: "[ARQUITECTO_INTEGRACION]"
+  reviewers: ["[RESPONSABLE_SEGURIDAD]", "[LIDER_QA]"]
+  approver: "[COMITE_ARQUITECTURA]"
+  sources: [ADR-014, ADR-021, GDP-ARQ-018, GDP-ARQ-019]
+  assumptions: [Topología física se deriva por modalidad]
+  decisions: [Sobre portable, at-least-once, outbox, inbox, sin binarios]
+  pending: [Schema registry, bindings AWS y AMQP, retención y DLQ]
+  history:
+    - version: 0.1.0
+      date: 2026-07-16
+      change: Contratos asíncronos del flujo vertical

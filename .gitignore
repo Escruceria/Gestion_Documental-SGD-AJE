@@ -1,0 +1,18 @@
+﻿node_modules/
+dist/
+coverage/
+
+.env
+.env.*
+!.env.example
+
+*.log
+.DS_Store
+Thumbs.db
+
+.vscode/
+.idea/
+
+# Archivos temporales de Office y del sistema
+.~lock.*#
+*.tmp

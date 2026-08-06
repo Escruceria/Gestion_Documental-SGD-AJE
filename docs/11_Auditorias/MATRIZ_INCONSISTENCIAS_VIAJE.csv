@@ -1,0 +1,27 @@
+Workspace,CategorÌa,Tipo de Inconsistencia,Valor Actual,Valor Propuesto,Severidad,Impacto,Bloquea Desarrollo
+package.json,Root,pnpm catalog faltante,SIN DEFINIR,16 dependencias catalogadas,CRœTICA,Resuelve 7 workspaces que usan catalog:,SÕ
+apps/api-gateway,Backend,Todas las deps con catalog: sin def.,catalog:,Versiones pinned espec√≠ficas,CRœTICA,pnpm install fallar√°,SÕ
+apps/api-gateway,Backend,DevDependencies faltantes,@types/node @nestjs/testing,Agregar 6 devDeps,CRœTICA,Desarrollo e testing imposible,SÕ
+apps/audit-compliance-service,Backend,@types/node incompatible,20.9.0,24.11.0,CRœTICA,Tipos de Node 24 no garantizados,SÕ
+apps/correspondence-workflow-service,Backend,@types/node incompatible,20.9.0,24.11.0,CRœTICA,Tipos de Node 24 no garantizados,SÕ
+apps/document-core-service,Backend,@types/node incompatible,20.9.0,24.11.0,CRœTICA,Tipos de Node 24 no garantizados,SÕ
+apps/document-processing-worker,Backend,@types/node incompatible,20.9.0,24.11.0,CRœTICA,Tipos de Node 24 no garantizados,SÕ
+apps/identity-access-service,Backend,@types/node incompatible,20.9.0,24.11.0,CRœTICA,Tipos de Node 24 no garantizados,SÕ
+apps/frontend,Frontend,DevDependencies faltantes,VAC√çO,@vitejs/plugin-react typescript vite vitest eslint,CRœTICA,sin dev toolchain,SÕ
+apps/frontend,Frontend,@types/node faltante,VAC√çO,24.11.0,CRœTICA,Desarrollo sin tipos,SÕ
+apps/web,Frontend,React version split,19.2.7,18.2.0,MAYOR,Incompatibilidad con frontend (18.2.0),SÕ
+apps/web,Frontend,Vite version split,8.1.5,5.0.2,MAYOR,Conflicto de build con frontend (5.0.2),SÕ
+apps/web,Frontend,Versiones pinned sin semver,11.14.0 etc,^11.14.0 etc,MAYOR,No actualizable autom√°ticamente,NO
+apps/web,Frontend,DevDependencies faltantes,VAC√çO,typescript vite vitest eslint,MAYOR,Testing imposible,SÕ
+libs/database,Database,@types/node versiÛn,24.11.0,24.11.0,OK,OK,NO
+libs/testing,Testing,Testing utilities faltantes,@testing-library/react/@testing-library/jest-dom,Agregar 6 devDeps,MAYOR,Testing library strategy imposible,SÕ
+libs/testing,Testing,Testcontainers faltante,VAC√çO,@testcontainers/postgresql testcontainers,MAYOR,Integration tests imposible,SÕ
+pocs/poc-001-multitenancy,POC,catalog: sin definiciÛn,catalog:,Versiones pinned,CRœTICA,pnpm install fallar√°,SÕ
+pocs/poc-001-multitenancy,POC,vitest versiÛn desincronizada,4.1.10,1.0.4,CRœTICA,2 major versions behind apps/,SÕ
+pocs/poc-001-multitenancy,POC,@types/node faltante,VAC√çO,24.11.0,CRœTICA,Desarrollo sin tipos,SÕ
+pocs/poc-001-multitenancy,POC,testcontainers pinned sin semver,12.0.4,^12.0.4,MENOR,No actualizable,NO
+pocs/poc-002-document-pipeline,POC,catalog: sin definiciÛn,catalog:,Versiones pinned,CRœTICA,pnpm install fallar√°,SÕ
+pocs/poc-002-document-pipeline,POC,vitest versiÛn desincronizada,4.1.10,1.0.4,CRœTICA,2 major versions behind apps/,SÕ
+pocs/poc-002-document-pipeline,POC,@types/node faltante,VAC√çO,24.11.0,CRœTICA,Desarrollo sin tipos,SÕ
+pocs/poc-002-document-pipeline,POC,amqplib versiÛn imposible,2.0.1,0.10.5,CRœTICA,2.0.1 no existe en npm,SÕ
+pocs/poc-002-document-pipeline,POC,testcontainers pinned sin semver,12.0.4,^12.0.4,MENOR,No actualizable,NO

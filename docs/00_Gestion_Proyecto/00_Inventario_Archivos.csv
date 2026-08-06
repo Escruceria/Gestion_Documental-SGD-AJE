@@ -1,0 +1,42 @@
+id,ruta,tipo,codigo,version,estado,fecha,propietario,fuente_heredada,hash_sha256,referenciado_en,observaciones
+INV-001,docs/00_Gestion_Proyecto/00_Diagnostico_Inicial_Proyecto.md,MD,GDP-DIA-001,1.1,Borrador para validación,2026-07-16,[ARQUITECTO],No,,Indice,Normalizar pendientes resueltos
+INV-002,docs/00_Gestion_Proyecto/00_Indice_Maestro_Documentacion.md,MD,GDP-IDX-001,2.3,Borrador controlado,2026-07-16,[RESPONSABLE_DOCUMENTACION],No,,Control cambios,Ruta normalizada
+INV-003,docs/00_Gestion_Proyecto/00_Plan_Generacion_Documental.md,MD,GDP-PLN-001,1.1,Borrador para aprobación,2026-07-16,[PROJECT_MANAGER],No,,Indice,Ruta normalizada
+INV-004,docs/00_Gestion_Proyecto/02_Alcance_Proyecto.md,MD,GDP-GPR-002,0.2,Borrador para validación,2026-07-16,[PRODUCT_OWNER],No,,Acta;ERS,Ruta normalizada
+INV-005,docs/00_Gestion_Proyecto/03_Objetivos_Proyecto.md,MD,GDP-GPR-003,0.1,Borrador para validación,2026-07-16,[PRODUCT_OWNER],No,,Acta;trazabilidad,Ruta normalizada
+INV-006,docs/00_Gestion_Proyecto/04_Interesados_Stakeholders.md,MD,GDP-GPR-004,0.1,Borrador para validación,2026-07-16,[PROJECT_MANAGER],No,,Acta;RACI,Ruta normalizada
+INV-007,docs/00_Gestion_Proyecto/05_Matriz_RACI.csv,CSV,GDP-GPR-005,0.1,Borrador,2026-07-16,[PROJECT_MANAGER],No,,Acta,Ruta normalizada
+INV-008,docs/00_Gestion_Proyecto/06_Glosario.md,MD,GDP-GPR-006,0.1,Borrador controlado,2026-07-16,[RESPONSABLE_DOCUMENTACION],No,,Todos,Ruta normalizada
+INV-009,docs/00_Gestion_Proyecto/07_Control_Cambios.md,MD,GDP-GPR-007,0.1,Borrador controlado,2026-07-16,[RESPONSABLE_DOCUMENTACION],No,,Indice,Ruta normalizada
+INV-010,docs/00_Gestion_Proyecto/08_Registro_Decisiones_Arquitectura.md,MD,GDP-GPR-008,1.1,Borrador controlado,2026-07-16,[ARQUITECTO],No,,ADR-011-021,Ruta normalizada
+INV-011,docs/00_Gestion_Proyecto/09_Riesgos_Proyecto.csv,CSV,GDP-GPR-009,0.1,Borrador,2026-07-16,[PROJECT_MANAGER],No,,Plan riesgos,Ruta normalizada
+INV-012,docs/00_Gestion_Proyecto/10_Hoja_Ruta_Producto.md,MD,GDP-GPR-010,0.2,Borrador,2026-07-16,[PRODUCT_OWNER],No,,Acta;backlog,Ruta normalizada
+INV-013,docs/01_Requisitos/15_Supuestos_Restricciones.md,MD,GDP-REQ-015,0.3,Borrador,2026-07-16,[BUSINESS_ANALYST],No,,ERS,Existente
+INV-014,docs/02_Analisis/13_Perfil_Capacidad_Operacion.md,MD,GDP-ANA-013,0.1,Borrador,2026-07-16,[ARQUITECTO],No,,RNF;POC,Cifras provisionales
+INV-015,docs/03_Arquitectura/03_Vista_Contexto_C4.md,MD,GDP-ARQ-003,0.1,Borrador,2026-07-16,[ARQUITECTO],No,,Arquitectura,Existente
+INV-016,docs/03_Arquitectura/04_Vista_Contenedores_C4.md,MD,GDP-ARQ-004,0.3,Borrador,2026-07-16,[ARQUITECTO],No,,Arquitectura,Existente
+INV-017,docs/03_Arquitectura/16_Mapa_Dominios.md,MD,GDP-ARQ-016,0.1,Borrador,2026-07-16,[ARQUITECTO],No,,C4;datos,Existente
+INV-018,docs/03_Arquitectura/17_Matriz_Responsabilidades_Propiedad_Datos.csv,CSV,GDP-ARQ-017,0.1,Borrador,2026-07-16,[ARQUITECTO],No,,Mapa dominios,Existente
+INV-019,docs/03_Arquitectura/18_Catalogo_Eventos_Comunicaciones.md,MD,GDP-ARQ-018,0.2,Borrador,2026-07-16,[ARQUITECTO_INTEGRACION],No,,AsyncAPI,Existente
+INV-020,docs/03_Arquitectura/20_Plan_Pruebas_Concepto.md,MD,GDP-ARQ-020,0.5,Borrador,2026-07-16,[ARQUITECTO],No,,ADR-019;gate,Existente
+INV-021,docs/03_Arquitectura/22_Catalogo_Maestro_Stack_Versiones.md,MD,GDP-ARQ-022,1.0,Borrador controlado,2026-07-16,[ARQUITECTO],No,,ADR-011-021,Baseline pendiente POC
+INV-022,docs/03_Arquitectura/ADR-011_Arquitectura_Distribuida_Macroservicios.md,MD,ADR-011,1.0,Aceptada,2026-07-16,Propietario del proyecto,No,,Registro ADR,Vigente
+INV-023,docs/03_Arquitectura/ADR-012_Stack_Tecnologico_Base.md,MD,ADR-012,1.0,Aceptada,2026-07-16,Propietario del proyecto,No,,Registro ADR,Vigente
+INV-024,docs/03_Arquitectura/ADR-013_Autenticacion_Keycloak_OIDC_OAuth2.md,MD,ADR-013,1.0,Aceptada,2026-07-16,Propietario del proyecto,No,,Registro ADR,Vigente
+INV-025,docs/03_Arquitectura/ADR-014_Mensajeria_AWS_EventBridge_SQS.md,MD,ADR-014,1.1,Aceptada,2026-07-16,Propietario del proyecto,No,,Registro ADR,Vigente
+INV-026,docs/03_Arquitectura/ADR-015_Acceso_PostgreSQL_Migraciones.md,MD,ADR-015,1.0,Aceptada,2026-07-16,Propietario del proyecto,No,,Registro ADR,Vigente
+INV-027,docs/03_Arquitectura/ADR-016_Almacenamiento_Objetos_S3_MinIO.md,MD,ADR-016,1.0,Aceptada,2026-07-16,Propietario del proyecto,No,,Registro ADR,Vigente
+INV-028,docs/03_Arquitectura/ADR-017_Validacion_Backend_Contratos_Errores.md,MD,ADR-017,1.0,Aceptada,2026-07-16,Propietario del proyecto,No,,Registro ADR,Vigente
+INV-029,docs/03_Arquitectura/ADR-018_Librerias_Arquitectura_Frontend.md,MD,ADR-018,1.0,Aceptada,2026-07-16,Propietario del proyecto,No,,Registro ADR,Vigente
+INV-030,docs/03_Arquitectura/ADR-019_Estrategia_Pruebas_Automatizadas.md,MD,ADR-019,1.0,Aceptada,2026-07-16,Propietario del proyecto,No,,Registro ADR,Vigente
+INV-031,docs/03_Arquitectura/ADR-020_Observabilidad_OpenTelemetry.md,MD,ADR-020,1.1,Aceptada,2026-07-16,Propietario del proyecto,No,,Registro ADR,Vigente
+INV-032,docs/03_Arquitectura/ADR-021_Mensajeria_Privada_RabbitMQ.md,MD,ADR-021,1.0,Aceptada,2026-07-16,Propietario del proyecto,No,,Registro ADR,Vigente
+INV-033,docs/05. Normativa/El Marco Normativo Fundamental.docx,DOCX,,sin_version,Fuente heredada,2026-07-16,Desconocido,Si,A36B845FA814CE68DFB16BFDACD20E0B48B230C9C2E7B81235CA6AA046B40E7E,Diagnostico,Requiere validacion juridica especializada
+INV-034,docs/05. Normativa/00. Leyes/LEY 594 DE 2000.pdf,PDF,,sin_version,Fuente heredada,2026-07-16,Fuente externa,Si,7470A5D92D45465AAC74F4FAC777E89B4EBCC202C639B9192E0E732F1EF566C4,Diagnostico,Verificar fuente oficial y vigencia
+INV-035,docs/05. Normativa/00. Leyes/Ley_527_de_1999.pdf,PDF,,sin_version,Fuente heredada,2026-07-16,Fuente externa,Si,784C1BA9870A2493030D65393C8F5C3A182A1B5F3992072374C3A7FDE5F9FEE8,Diagnostico,Verificar fuente oficial y vigencia
+INV-036,docs/05. Normativa/01. Decretos/Decreto_1080_de_2015_Sector_Cultura.pdf,PDF,,sin_version,Fuente heredada,2026-07-16,Fuente externa,Si,73E2496B2FF3B9241AFEDE1CC7890FF01576ABA64187ECE0898A40E4CDBF2C69,Diagnostico,Verificar compilacion vigente
+INV-037,docs/05. Normativa/01. Decretos/Decreto_2578_de_2012.pdf,PDF,,sin_version,Fuente heredada,2026-07-16,Fuente externa,Si,DD8E8D6AE93E392D6622DE71AF6003A8A096441D87B23E9878A48BBFF5669610,Diagnostico,Revisar derogatoria/compilacion
+INV-038,docs/05. Normativa/02. Acuerdos/2024-02_29_AcuerdoAGN-FIRMADO.pdf,PDF,,sin_version,Fuente heredada,2026-07-16,AGN,Si,2D71C6634B3B5762588855F2EAB4CF778720C79DD2E63EAF0FAF1D9415B3F65B,Diagnostico,Validar aplicabilidad por articulo
+INV-039,docs/05. Normativa/03. Actos administrativos/acuerdo-012-1998.pdf,PDF,,sin_version,Fuente heredada,2026-07-16,AGN,Si,336E460CC692C2312885EB4C8A244D44355AC812503E3130FAC74A1CAD85861F,Diagnostico,Acto particular no generalizar
+INV-040,docs/05. Normativa/03. Actos administrativos/resolucion-536-2017.pdf,PDF,,sin_version,Fuente heredada,2026-07-16,Fuente externa,Si,D191FE73386BD1E133ADDEE46B7AA545356A9D8E2A73EBCA3BC91072C5F85887,Diagnostico,Escaneado requiere revision visual
+INV-041,docs/05. Normativa/03. Actos administrativos/resolucion-596-2016.pdf,PDF,,sin_version,Fuente heredada,2026-07-16,Fuente externa,Si,E0DDFA006177726CF9181C6FACCB7AA01E73C376A0C75B7067DAEF1BD152E8AF,Diagnostico,Acto particular no generalizar
