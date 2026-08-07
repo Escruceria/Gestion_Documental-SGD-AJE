@@ -1,0 +1,17 @@
+{
+  "name": "@sgd-aje/testing",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\""
+  },
+  "devDependencies": {
+    "@nestjs/testing": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
