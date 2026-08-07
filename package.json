@@ -1,0 +1,21 @@
+{
+    "name":  "gestion-documental-sgd-aje",
+    "version":  "0.1.0",
+    "private":  true,
+    "description":  "Sistema de Gestión Documental multiempresa con arquitectura distribuida por dominios.",
+    "license":  "UNLICENSED",
+    "packageManager":  "pnpm@9.15.3",
+    "engines":  {
+                    "node":  "24.18.0",
+                    "pnpm":  "9.15.3"
+                },
+    "scripts":  {
+                    "build":  "pnpm -r --if-present run build",
+                    "dev":  "pnpm -r --parallel --if-present run dev",
+                    "start":  "pnpm -r --if-present run start",
+                    "lint":  "pnpm -r --if-present run lint",
+                    "test":  "pnpm -r --if-present run test",
+                    "typecheck":  "pnpm -r --if-present run typecheck",
+                    "clean":  "pnpm -r --if-present run clean"
+                }
+}

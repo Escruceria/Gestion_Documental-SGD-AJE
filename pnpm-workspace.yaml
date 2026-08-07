@@ -1,0 +1,64 @@
+packages:
+  - "apps/*"
+  - "libs/*"
+  - "pocs/*"
+
+catalog:
+  typescript: 7.0.2
+  esbuild: 0.28.1
+
+  "@nestjs/cli": 11.1.28
+  "@nestjs/common": 11.1.28
+  "@nestjs/core": 11.1.28
+  "@nestjs/platform-express": 11.1.28
+  "@nestjs/swagger": 11.4.5
+  "@nestjs/testing": 11.1.28
+  "@nestjs/terminus": 11.1.1
+  express: 5.2.1
+  rxjs: 7.8.2
+  reflect-metadata: 0.2.2
+
+  class-validator: 0.15.1
+  class-transformer: 0.5.1
+
+  kysely: 0.29.3
+  pg: 8.22.0
+  node-pg-migrate: 8.0.4
+
+  amqplib: 2.0.1
+  amqp-connection-manager: 5.0.0
+
+  react: 19.2.7
+  react-dom: 19.2.7
+  vite: 8.1.5
+  react-router: 8.2.0
+  "@tanstack/react-query": 5.101.2
+  react-hook-form: 7.81.0
+  zod: 4.4.3
+  "@hookform/resolvers": 5.4.0
+  "@mui/material": 9.2.0
+  "@mui/icons-material": 9.2.0
+  "@emotion/react": 11.14.0
+  "@emotion/styled": 11.14.1
+  openapi-fetch: 0.17.0
+  openapi-typescript: 7.13.0
+  zustand: 5.0.14
+  i18next: 26.3.6
+  react-i18next: 17.0.10
+  date-fns: 4.4.0
+  keycloak-js: 26.2.4
+
+  vitest: 4.1.10
+  supertest: 7.2.2
+  testcontainers: 12.0.4
+  "@testcontainers/postgresql": 12.0.4
+  msw: 2.15.0
+  "@playwright/test": 1.61.1
+  playwright: 1.61.1
+  axe-core: 4.12.1
+  jest-axe: 10.0.0
+
+  "@opentelemetry/api": 1.9.1
+  "@opentelemetry/sdk-node": 0.220.0
+  pino: 10.3.1
+  nestjs-pino: 4.6.1
