@@ -21,10 +21,10 @@ Equipo,
 
 Mañana iniciamos desarrollo POC-001: Multitenancy + RLS + Keycloak.
 
-REPO: https://github.com/Escruceria/gestion_documental.git
+REPO: https://github.com/Escruceria/Gestion_Documental-SGD-AJE.git
 
 SETUP (30 min):
-1. git clone https://github.com/Escruceria/gestion_documental.git
+1. git clone https://github.com/Escruceria/Gestion_Documental-SGD-AJE.git
 2. cd gestion-documental
 3. pnpm install
 4. pnpm docker:up
@@ -49,7 +49,7 @@ KICKOFF MEETING: 9:00 AM
 
 ```bash
 # En laptop fresco:
-git clone https://github.com/Escruceria/gestion_documental.git
+git clone https://github.com/Escruceria/Gestion_Documental-SGD-AJE.git
 cd gestion-documental
 
 # 1. Setup completo
