@@ -1,18 +1,113 @@
-﻿node_modules/
-dist/
-coverage/
+# ============================================================
+# SGD-AJE - Archivos ignorados por Git
+# ============================================================
 
+# ------------------------------------------------------------
+# Dependencias y almacenamiento local de pnpm
+# ------------------------------------------------------------
+node_modules/
+.pnpm-store/
+
+# ------------------------------------------------------------
+# Variables de entorno y secretos
+# Se conserva el archivo de referencia versionado.
+# ------------------------------------------------------------
 .env
 .env.*
 !.env.example
 
-*.log
-.DS_Store
-Thumbs.db
+# ------------------------------------------------------------
+# Compilacion y artefactos generados
+# ------------------------------------------------------------
+dist/
+build/
+out/
+lib/
+*.tsbuildinfo
 
+# ------------------------------------------------------------
+# Cobertura y resultados de pruebas
+# ------------------------------------------------------------
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+blob-report/
+
+# ------------------------------------------------------------
+# Cache de herramientas
+# ------------------------------------------------------------
+.cache/
+.eslintcache
+.vite/
+.vitest/
+.turbo/
+
+# ------------------------------------------------------------
+# Logs y reportes temporales
+# ------------------------------------------------------------
+*.log
+logs/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ------------------------------------------------------------
+# Archivos temporales
+# ------------------------------------------------------------
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+
+# ------------------------------------------------------------
+# Editores e IDE
+# ------------------------------------------------------------
 .vscode/
 .idea/
+*.code-workspace
 
-# Archivos temporales de Office y del sistema
+# ------------------------------------------------------------
+# Sistema operativo
+# ------------------------------------------------------------
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ------------------------------------------------------------
+# Archivos temporales y bloqueos de Microsoft Office
+# ------------------------------------------------------------
 .~lock.*#
-*.tmp
+~$*
+
+# ------------------------------------------------------------
+# Certificados, llaves y secretos locales
+# Nunca deben versionarse.
+# ------------------------------------------------------------
+*.pem
+*.key
+*.pfx
+*.p12
+*.crt
+*.cer
+
+# ------------------------------------------------------------
+# Datos locales de servicios e infraestructura
+# ------------------------------------------------------------
+data/
+docker-data/
+postgres-data/
+rabbitmq-data/
+minio-data/
+keycloak-data/
+
+# ------------------------------------------------------------
+# Archivos generados por herramientas de seguridad y SBOM
+# Se versionaran solo cuando exista una decision expresa.
+# ------------------------------------------------------------
+reports/
+security-reports/
+sbom-output/
