@@ -5,6 +5,10 @@ packages:
 
 catalog:
   typescript: 7.0.2
+  "@types/node": 24.13.2
+  "@types/react": 19.2.17
+  "@types/react-dom": 19.2.3
+  "@types/pg": 8.20.0
   esbuild: 0.28.1
 
   "@nestjs/cli": 11.1.28

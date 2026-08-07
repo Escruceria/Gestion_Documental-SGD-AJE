@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "typescript": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "@types/node": "catalog:"
   }
 }

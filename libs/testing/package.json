@@ -12,6 +12,7 @@
   "devDependencies": {
     "@nestjs/testing": "catalog:",
     "typescript": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "@types/node": "catalog:"
   }
 }

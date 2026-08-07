@@ -3,9 +3,9 @@
 | Campo | Valor |
 |---|---|
 | Código | GDP-ARQ-022 |
-| Versión | 1.2 |
+| Versión | 1.3 |
 | Estado | Borrador controlado; stack aprobado y baseline técnico pendiente de instalación, POC, lockfile, SBOM y digests |
-| Fecha de corte | 2026-08-06 |
+| Fecha de corte | 2026-08-07 |
 | Propietario | Antonio José Escrucería Uribe — Arquitecto de solución |
 | Aprobador funcional | Wilmar Betancur Valencia — Patrocinador |
 | ADR fuente | ADR-011 a ADR-021 |
@@ -14,7 +14,7 @@
 
 Consolidar en una sola fuente el stack aprobado, la versión objetivo verificada al corte, el mecanismo que fijará la versión reproducible y la política de actualización. Este catálogo no sustituye los ADR: resume sus decisiones y gobierna el baseline técnico.
 
-Las versiones npm indicadas corresponden a versiones publicadas verificadas hasta el 2026-08-06. Algunas decisiones conservan evidencia de consulta inicial del 2026-07-16 y fueron actualizadas posteriormente mediante esta versión 1.2 del catálogo. Antes de incorporarse a la línea base deberán demostrarse conjuntamente, registrarse en el lockfile y SBOM, y fijarse mediante digest cuando corresponda.
+Las versiones npm indicadas corresponden a versiones publicadas verificadas hasta el 2026-08-07. Algunas decisiones conservan evidencia de consulta inicial del 2026-07-16 y fueron actualizadas posteriormente mediante esta versión 1.3 del catálogo. Antes de incorporarse a la línea base deberán demostrarse conjuntamente, registrarse en el lockfile y SBOM, y fijarse mediante digest cuando corresponda.
 
 ## 2. Significado de estados
 
@@ -33,6 +33,7 @@ Las versiones npm indicadas corresponden a versiones publicadas verificadas hast
 | Lenguaje | `typescript` | 7.0.2 | Baseline candidato | `devDependencies` + lockfile |
 | Runtime | Node.js Krypton LTS | 24.18.0 | Aprobada | `.nvmrc`/Volta e imagen por digest |
 | Gestor de paquetes | `pnpm` | 9.15.3 | Aprobada | `packageManager` en `package.json`, `.npmrc`, `pnpm-workspace.yaml` y lockfile |
+| Tipos Node.js | `@types/node` | 24.13.2 | Baseline candidato | `devDependencies` + catálogo pnpm + lockfile |
 | Framework backend | `@nestjs/core` | 11.1.28 | Baseline candidato | lockfile |
 | Núcleo NestJS | `@nestjs/common` | 11.1.28 | Baseline candidato | lockfile; misma línea NestJS |
 | Motor HTTP NestJS | `@nestjs/platform-express` | 11.1.28 | Baseline candidato | lockfile; misma línea NestJS |
@@ -66,7 +67,10 @@ La tecnología concreta para validar variables de entorno sigue pendiente. El co
 | Base transaccional | PostgreSQL | 18.4 | Baseline candidato | imagen/servicio por major 18 y patch actual |
 | Query builder | `kysely` | 0.29.3 | Baseline candidato | lockfile |
 | Driver/pool | `pg` | 8.22.0 | Baseline candidato | lockfile |
+| Tipos PostgreSQL | `@types/pg` | 8.20.0 | Baseline candidato | `devDependencies` + catálogo pnpm + lockfile |
 | Migraciones | `node-pg-migrate` | 8.0.4 | Baseline candidato | lockfile |
+
+`@types/pg` se incorpora únicamente para tipado estático del driver PostgreSQL durante desarrollo y compilación. La versión efectiva de runtime continúa gobernada por `pg`.
 
 PostgreSQL 18.4 era el minor soportado actual de la línea 18 al corte; PostgreSQL recomienda ejecutar el minor actual del major soportado. Los upgrades 18.x son de mantenimiento controlado; PostgreSQL 19 requiere plan/ADR de upgrade mayor. [Política de versiones PostgreSQL](https://www.postgresql.org/support/versioning/)
 
@@ -86,7 +90,9 @@ Keycloak Server y `keycloak-js` tienen ciclos independientes; no se forzará igu
 | Necesidad | Paquete | Versión objetivo | Estado | Fijación |
 |---|---|---:|---|---|
 | Framework UI | `react` | 19.2.7 | Baseline candidato | lockfile |
+| Tipos React | `@types/react` | 19.2.17 | Baseline candidato | `devDependencies` + catálogo pnpm + lockfile |
 | Render DOM | `react-dom` | 19.2.7 | Baseline candidato | lockfile; igual a React |
+| Tipos React DOM | `@types/react-dom` | 19.2.3 | Baseline candidato | `devDependencies` + catálogo pnpm + lockfile |
 | Build/dev server | `vite` | 8.1.5 | Baseline candidato | lockfile |
 | Enrutamiento Data Mode | `react-router` | 8.2.0 | Baseline candidato | lockfile |
 | Estado remoto | `@tanstack/react-query` | 5.101.2 | Baseline candidato | lockfile |
@@ -103,6 +109,8 @@ Keycloak Server y `keycloak-js` tienen ciclos independientes; no se forzará igu
 | Internacionalización | `i18next` | 26.3.6 | Baseline candidato | lockfile |
 | Integración i18n React | `react-i18next` | 17.0.10 | Baseline candidato | lockfile |
 | Fechas | `date-fns` | 4.4.0 | Baseline candidato | lockfile |
+
+Los paquetes `@types/react`, `@types/react-dom` y `@types/node` se incorporan como dependencias de desarrollo para compilación y validación estática del frontend. No forman parte del runtime entregado al navegador.
 
 React Router 8.2.0 declara React/React DOM 19.2.7 o superior y Node.js 22.22 o superior; la combinación candidata React 19.2.7 + Node 24.18.0 satisface esos requisitos publicados. Vite 8 también admite Node 24.
 
@@ -259,3 +267,4 @@ Al crear el workspace, al completar cada POC, mensualmente durante construcción
 | 1.0 | 2026-07-16 | Consolidación inicial del stack aprobado por ADR-011 a ADR-021. | Antonio José Escrucería Uribe |
 | 1.1 | 2026-07-16 | Incorporación de versiones candidatas, política de fijación, actualización y gate técnico. | Antonio José Escrucería Uribe |
 | 1.2 | 2026-08-06 | Se adopta pnpm 9.15.3 y RabbitMQ 4.3.4; se actualizan responsables nominales y se reinicia la construcción del workspace, lockfile, SBOM y digests. | Antonio José Escrucería Uribe |
+| 1.3 | 2026-08-07 | Se incorporan las dependencias de tipado estático `@types/node`, `@types/react`, `@types/react-dom` y `@types/pg` al baseline candidato y al catálogo centralizado del workspace. | Antonio José Escrucería Uribe |
