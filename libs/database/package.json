@@ -16,6 +16,8 @@
   "devDependencies": {
     "node-pg-migrate": "catalog:",
     "typescript": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "@types/node": "catalog:",
+    "@types/pg": "catalog:"
   }
 }
