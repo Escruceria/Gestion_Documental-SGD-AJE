@@ -3,18 +3,18 @@
 | Campo | Valor |
 |---|---|
 | Código | GDP-ARQ-022 |
-| Versión | 1.1 |
-| Estado | Borrador controlado; stack aprobado y baseline de versiones pendiente de POC/lockfile |
-| Fecha de corte | 2026-07-16 |
-| Propietario | `[ARQUITECTO]` |
-| Aprobador funcional | Propietario del proyecto |
+| Versión | 1.2 |
+| Estado | Borrador controlado; stack aprobado y baseline técnico pendiente de instalación, POC, lockfile, SBOM y digests |
+| Fecha de corte | 2026-08-06 |
+| Propietario | Antonio José Escrucería Uribe — Arquitecto de solución |
+| Aprobador funcional | Wilmar Betancur Valencia — Patrocinador |
 | ADR fuente | ADR-011 a ADR-021 |
 
 ## 1. Propósito
 
 Consolidar en una sola fuente el stack aprobado, la versión objetivo verificada al corte, el mecanismo que fijará la versión reproducible y la política de actualización. Este catálogo no sustituye los ADR: resume sus decisiones y gobierna el baseline técnico.
 
-Las versiones npm indicadas corresponden a la versión publicada consultada el 2026-07-16. Antes de iniciar producción deben demostrarse conjuntamente en POC, registrarse en lockfile/SBOM y fijarse en imágenes por digest cuando corresponda.
+Las versiones npm indicadas corresponden a versiones publicadas verificadas hasta el 2026-08-06. Algunas decisiones conservan evidencia de consulta inicial del 2026-07-16 y fueron actualizadas posteriormente mediante esta versión 1.2 del catálogo. Antes de incorporarse a la línea base deberán demostrarse conjuntamente, registrarse en el lockfile y SBOM, y fijarse mediante digest cuando corresponda.
 
 ## 2. Significado de estados
 
@@ -32,6 +32,7 @@ Las versiones npm indicadas corresponden a la versión publicada consultada el 2
 |---|---|---:|---|---|
 | Lenguaje | `typescript` | 7.0.2 | Baseline candidato | `devDependencies` + lockfile |
 | Runtime | Node.js Krypton LTS | 24.18.0 | Aprobada | `.nvmrc`/Volta e imagen por digest |
+| Gestor de paquetes | `pnpm` | 9.15.3 | Aprobada | `packageManager` en `package.json`, `.npmrc`, `pnpm-workspace.yaml` y lockfile |
 | Framework backend | `@nestjs/core` | 11.1.28 | Baseline candidato | lockfile |
 | Núcleo NestJS | `@nestjs/common` | 11.1.28 | Baseline candidato | lockfile; misma línea NestJS |
 | Motor HTTP NestJS | `@nestjs/platform-express` | 11.1.28 | Baseline candidato | lockfile; misma línea NestJS |
@@ -124,12 +125,12 @@ MinIO publica releases por fecha y su distribución/soporte debe verificarse par
 |---|---|---:|---|---|
 | SaaS | Amazon EventBridge | Servicio administrado | Gestionado | bus/reglas mediante IaC |
 | SaaS | Amazon SQS | Servicio administrado | Gestionado | colas/policies mediante IaC |
-| Privada | RabbitMQ | 4.3.2 | Baseline candidato | imagen oficial por digest |
+| Privada | RabbitMQ | 4.3.4 | Baseline candidato | imagen oficial por digest |
 | Protocolo privado | AMQP | 0-9-1 sobre TLS | Aprobada | configuración |
 | Cliente AMQP | `amqplib` | 2.0.1 | Baseline candidato | lockfile |
 | Gestión de conexión | `amqp-connection-manager` | 5.0.0 | Baseline candidato | lockfile |
 
-RabbitMQ 4.3.2 era el patch actual de la serie 4.3 con soporte comunitario al corte. Un upgrade de serie requiere pruebas de quorum, confirms, retries, DLQ y rolling upgrade. [Información de releases RabbitMQ](https://www.rabbitmq.com/release-information)
+RabbitMQ 4.3.4 se adopta como baseline candidato de la serie 4.3. Su vigencia, imagen oficial, digest, compatibilidad y soporte deberán verificarse nuevamente durante POC-002 y antes de promover cualquier imagen. [Información de releases RabbitMQ](https://www.rabbitmq.com/release-information)
 
 ## 10. Pruebas
 
@@ -185,13 +186,13 @@ No se selecciona Tempo 3.0 mientras sea prerelease. Las versiones privadas se va
 
 ## 13. Decisiones de versión aún pendientes
 
-1. **Resuelto:** pnpm 11.9.0 y workspace compartido; ver GDP-GPR-016. El lockfile fue generado para 13 proyectos.
+1. **Resuelto a nivel de decisión:** pnpm 9.15.3 será el gestor de paquetes del monorepo. Pendiente reconstruir el workspace, generar el lockfile y validar instalación congelada, peer dependencies y proyectos incluidos.
 2. Herramienta concreta para validar configuración/variables de entorno.
 3. Producto KMS/secretos para instalaciones privadas.
-4. Release y licencia exactas de MinIO, fijadas por digest después de POC.
+4. Release, imagen, digest y licencia exactos de MinIO después de POC-002.
 5. Imagen exacta de OWASP ZAP y política de actualización.
-6. Distribución/versión ADOT del despliegue AWS.
-7. Registry/linter/diff concreto para OpenAPI y AsyncAPI.
+6. Distribución y versión ADOT del despliegue AWS.
+7. Registry, linter y herramienta de diff para OpenAPI y AsyncAPI.
 8. Imagen base Linux y estrategia de actualización de contenedores.
 9. Herramienta de error tracking frontend; Sentry no está aprobado.
 
@@ -222,17 +223,17 @@ Estos pendientes no reabren el stack ya aprobado, pero bloquean una línea base 
 Las vulnerabilidades críticas pueden acelerar una actualización, pero no eliminan las pruebas proporcionadas al riesgo.
 
 ## 16. Gate para convertir el baseline candidato en línea base
-
-1. ~~Crear workspace con gestor aprobado y lockfile.~~ Cumplido con pnpm 11.9.0; validación frozen/peers pendiente.
-2. Instalar exactamente las versiones candidatas sin overrides inseguros.
-3. Compilar backend y frontend en TypeScript strict.
-4. Ejecutar unitarias, integración, OpenAPI y build productivo.
-5. Ejecutar POC-001 y POC-002 con versiones/imágenes registradas.
-6. Validar peer dependencies, licencias y vulnerabilidades.
-7. Generar SBOM y fijar digests.
-8. Registrar excepciones o ajustes con causa.
-9. Cambiar estado del catálogo a `Aprobado` mediante decisión del propietario.
-
+1. Crear el workspace con pnpm 9.15.3, declarar los proyectos aprobados y generar un lockfile nuevo.
+2. Validar instalación reproducible mediante `pnpm install --frozen-lockfile`.
+3. Instalar exactamente las versiones candidatas sin overrides inseguros.
+4. Validar peer dependencies y compatibilidad entre Node.js, TypeScript, NestJS, React, Vite, Vitest y librerías asociadas.
+5. Compilar backend y frontend en TypeScript strict.
+6. Ejecutar pruebas unitarias, integración, contratos OpenAPI/AsyncAPI y build productivo.
+7. Ejecutar POC-001 y POC-002 con versiones e imágenes registradas.
+8. Validar licencias, vulnerabilidades y dependencias transitivas.
+9. Generar SBOM, hashes y fijar imágenes mediante digest SHA-256.
+10. Registrar excepciones o ajustes con causa, responsable y vencimiento.
+11. Cambiar el estado del catálogo a `Aprobado` mediante decisión formal del propietario y aprobador.
 ## 17. Fuentes de verificación
 
 - Registro npm consultado el 2026-07-16 para paquetes JavaScript/TypeScript.
@@ -250,3 +251,11 @@ Las vulnerabilidades críticas pueden acelerar una actualización, pero no elimi
 ## 18. Revisión
 
 Al crear el workspace, al completar cada POC, mensualmente durante construcción, antes de cada release y ante vulnerabilidad crítica o fin de soporte.
+
+## 19. Historial
+
+| Versión | Fecha | Cambio | Autor |
+|---|---|---|---|
+| 1.0 | 2026-07-16 | Consolidación inicial del stack aprobado por ADR-011 a ADR-021. | Antonio José Escrucería Uribe |
+| 1.1 | 2026-07-16 | Incorporación de versiones candidatas, política de fijación, actualización y gate técnico. | Antonio José Escrucería Uribe |
+| 1.2 | 2026-08-06 | Se adopta pnpm 9.15.3 y RabbitMQ 4.3.4; se actualizan responsables nominales y se reinicia la construcción del workspace, lockfile, SBOM y digests. | Antonio José Escrucería Uribe |
