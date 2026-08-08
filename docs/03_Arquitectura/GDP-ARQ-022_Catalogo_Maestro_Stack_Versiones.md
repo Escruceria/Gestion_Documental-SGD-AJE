@@ -3,7 +3,7 @@
 | Campo | Valor |
 |---|---|
 | Código | GDP-ARQ-022 |
-| Versión | 1.3 |
+| Versión | 1.5 |
 | Estado | Borrador controlado; stack aprobado y baseline técnico pendiente de instalación, POC, lockfile, SBOM y digests |
 | Fecha de corte | 2026-08-07 |
 | Propietario | Antonio José Escrucería Uribe — Arquitecto de solución |
@@ -14,7 +14,7 @@
 
 Consolidar en una sola fuente el stack aprobado, la versión objetivo verificada al corte, el mecanismo que fijará la versión reproducible y la política de actualización. Este catálogo no sustituye los ADR: resume sus decisiones y gobierna el baseline técnico.
 
-Las versiones npm indicadas corresponden a versiones publicadas verificadas hasta el 2026-08-07. Algunas decisiones conservan evidencia de consulta inicial del 2026-07-16 y fueron actualizadas posteriormente mediante esta versión 1.3 del catálogo. Antes de incorporarse a la línea base deberán demostrarse conjuntamente, registrarse en el lockfile y SBOM, y fijarse mediante digest cuando corresponda.
+Las versiones npm indicadas corresponden a versiones publicadas verificadas hasta el 2026-08-07. Algunas decisiones conservan evidencia de consulta inicial del 2026-07-16 y fueron actualizadas posteriormente mediante esta versión 1.5 del catálogo. Antes de incorporarse a la línea base deberán demostrarse conjuntamente, registrarse en el lockfile y SBOM, y fijarse mediante digest cuando corresponda.
 
 ## 2. Significado de estados
 
@@ -30,11 +30,12 @@ Las versiones npm indicadas corresponden a versiones publicadas verificadas hast
 
 | Componente | Paquete/artefacto | Versión objetivo | Estado | Fijación |
 |---|---|---:|---|---|
-| Lenguaje | `typescript` | 7.0.2 | Baseline candidato | `devDependencies` + lockfile |
+| Lenguaje | `typescript` | 5.9.3 | Baseline candidato | `devDependencies` + catálogo pnpm + lockfile |
 | Runtime | Node.js Krypton LTS | 24.18.0 | Aprobada | `.nvmrc`/Volta e imagen por digest |
 | Gestor de paquetes | `pnpm` | 9.15.3 | Aprobada | `packageManager` en `package.json`, `.npmrc`, `pnpm-workspace.yaml` y lockfile |
 | Tipos Node.js | `@types/node` | 24.13.2 | Baseline candidato | `devDependencies` + catálogo pnpm + lockfile |
 | Framework backend | `@nestjs/core` | 11.1.28 | Baseline candidato | lockfile |
+| CLI NestJS | `@nestjs/cli` | 11.0.24 | Baseline candidato | `devDependencies` + catálogo pnpm + lockfile |
 | Núcleo NestJS | `@nestjs/common` | 11.1.28 | Baseline candidato | lockfile; misma línea NestJS |
 | Motor HTTP NestJS | `@nestjs/platform-express` | 11.1.28 | Baseline candidato | lockfile; misma línea NestJS |
 | Motor HTTP | `express` | 5.2.1 | Baseline candidato | lockfile |
@@ -45,7 +46,7 @@ Las versiones npm indicadas corresponden a versiones publicadas verificadas hast
 
 Node.js 24 está en LTS y la publicación oficial mostraba 24.18.0 como último LTS al corte. Solo se admitirán parches 24.x soportados sin reabrir el ADR; cambiar de major requiere revisión. [Ciclo de versiones de Node.js](https://nodejs.org/en/about/previous-releases)
 
-TypeScript 7.0.2 es el baseline candidato publicado, no una excepción automática a compatibilidad. Debe compilar decoradores, metadata, NestJS, Kysely, Vite y pruebas antes de entrar al lockfile de la línea base.
+TypeScript 5.9.3 se adopta como baseline candidato compatible con NestJS CLI 11.0.24. TypeScript 7.0.2 fue descartado temporalmente tras comprobar que `tsc` funciona, pero `nest build` falla porque Nest CLI requiere la API programática disponible en TypeScript 5.9.3. La actualización a TypeScript 7 deberá reevaluarse cuando NestJS CLI declare compatibilidad.
 
 ## 4. Validación, contratos y errores backend
 
@@ -268,3 +269,5 @@ Al crear el workspace, al completar cada POC, mensualmente durante construcción
 | 1.1 | 2026-07-16 | Incorporación de versiones candidatas, política de fijación, actualización y gate técnico. | Antonio José Escrucería Uribe |
 | 1.2 | 2026-08-06 | Se adopta pnpm 9.15.3 y RabbitMQ 4.3.4; se actualizan responsables nominales y se reinicia la construcción del workspace, lockfile, SBOM y digests. | Antonio José Escrucería Uribe |
 | 1.3 | 2026-08-07 | Se incorporan las dependencias de tipado estático `@types/node`, `@types/react`, `@types/react-dom` y `@types/pg` al baseline candidato y al catálogo centralizado del workspace. | Antonio José Escrucería Uribe |
+| 1.4 | 2026-08-07 | Se corrige `@nestjs/cli` de 11.1.28 a 11.0.24 tras validación contra el registro npm; se mantiene NestJS framework en 11.1.28. | Antonio José Escrucería Uribe |
+| 1.5 | 2026-08-07 | Se ajusta TypeScript de 7.0.2 a 5.9.3 tras validación de integración: `tsc` con TypeScript 7 pasa, pero `nest build` con Nest CLI 11.0.24 falla por incompatibilidad de API programática. | Antonio José Escrucería Uribe |
