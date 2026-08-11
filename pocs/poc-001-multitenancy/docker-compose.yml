@@ -1,0 +1,30 @@
+name: sgd-poc001-multitenancy
+
+services:
+  postgres:
+    image: postgres:18.4-alpine
+    container_name: sgd-poc001-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: sgd_poc_multitenancy
+      POSTGRES_USER: sgd_poc
+      POSTGRES_PASSWORD: ${POC_POSTGRES_PASSWORD}
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U sgd_poc -d sgd_poc_multitenancy
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
+volumes:
+  postgres_data:
