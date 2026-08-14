@@ -1,0 +1,73 @@
+{
+    "vhosts":  [
+                   {
+                       "name":  "/sgd-poc002"
+                   }
+               ],
+    "exchanges":  [
+                      {
+                          "name":  "gd.events",
+                          "vhost":  "/sgd-poc002",
+                          "type":  "topic",
+                          "durable":  true,
+                          "auto_delete":  false,
+                          "internal":  false,
+                          "arguments":  {
+
+                                        }
+                      },
+                      {
+                          "name":  "gd.commands",
+                          "vhost":  "/sgd-poc002",
+                          "type":  "direct",
+                          "durable":  true,
+                          "auto_delete":  false,
+                          "internal":  false,
+                          "arguments":  {
+
+                                        }
+                      }
+                  ],
+    "queues":  [
+                   {
+                       "name":  "document-processing.document-version-registered.q",
+                       "vhost":  "/sgd-poc002",
+                       "durable":  true,
+                       "auto_delete":  false,
+                       "arguments":  {
+                                         "x-queue-type":  "quorum"
+                                     }
+                   },
+                   {
+                       "name":  "document-processing.scan-document.q",
+                       "vhost":  "/sgd-poc002",
+                       "durable":  true,
+                       "auto_delete":  false,
+                       "arguments":  {
+                                         "x-queue-type":  "quorum"
+                                     }
+                   }
+               ],
+    "bindings":  [
+                     {
+                         "source":  "gd.events",
+                         "vhost":  "/sgd-poc002",
+                         "destination":  "document-processing.document-version-registered.q",
+                         "destination_type":  "queue",
+                         "routing_key":  "document.version.registered.v1",
+                         "arguments":  {
+
+                                       }
+                     },
+                     {
+                         "source":  "gd.commands",
+                         "vhost":  "/sgd-poc002",
+                         "destination":  "document-processing.scan-document.q",
+                         "destination_type":  "queue",
+                         "routing_key":  "processing.scan-document.v1",
+                         "arguments":  {
+
+                                       }
+                     }
+                 ]
+}
