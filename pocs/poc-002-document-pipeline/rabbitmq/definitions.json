@@ -26,6 +26,28 @@
                           "arguments":  {
 
                                         }
+                      },
+                      {
+                          "name":  "gd.retry",
+                          "vhost":  "/sgd-poc002",
+                          "type":  "direct",
+                          "durable":  true,
+                          "auto_delete":  false,
+                          "internal":  false,
+                          "arguments":  {
+
+                                        }
+                      },
+                      {
+                          "name":  "gd.dead",
+                          "vhost":  "/sgd-poc002",
+                          "type":  "direct",
+                          "durable":  true,
+                          "auto_delete":  false,
+                          "internal":  false,
+                          "arguments":  {
+
+                                        }
                       }
                   ],
     "queues":  [
@@ -40,6 +62,51 @@
                    },
                    {
                        "name":  "document-processing.scan-document.q",
+                       "vhost":  "/sgd-poc002",
+                       "durable":  true,
+                       "auto_delete":  false,
+                       "arguments":  {
+                                         "x-queue-type":  "quorum"
+                                     }
+                   },
+                   {
+                       "name":  "document-processing.scan-document.retry-5s.q",
+                       "vhost":  "/sgd-poc002",
+                       "durable":  true,
+                       "auto_delete":  false,
+                       "arguments":  {
+                                         "x-queue-type":  "quorum",
+                                         "x-message-ttl":  5000,
+                                         "x-dead-letter-exchange":  "gd.commands",
+                                         "x-dead-letter-routing-key":  "processing.scan-document.v1"
+                                     }
+                   },
+                   {
+                       "name":  "document-processing.scan-document.retry-30s.q",
+                       "vhost":  "/sgd-poc002",
+                       "durable":  true,
+                       "auto_delete":  false,
+                       "arguments":  {
+                                         "x-queue-type":  "quorum",
+                                         "x-message-ttl":  30000,
+                                         "x-dead-letter-exchange":  "gd.commands",
+                                         "x-dead-letter-routing-key":  "processing.scan-document.v1"
+                                     }
+                   },
+                   {
+                       "name":  "document-processing.scan-document.retry-5m.q",
+                       "vhost":  "/sgd-poc002",
+                       "durable":  true,
+                       "auto_delete":  false,
+                       "arguments":  {
+                                         "x-queue-type":  "quorum",
+                                         "x-message-ttl":  300000,
+                                         "x-dead-letter-exchange":  "gd.commands",
+                                         "x-dead-letter-routing-key":  "processing.scan-document.v1"
+                                     }
+                   },
+                   {
+                       "name":  "document-processing.scan-document.dlq",
                        "vhost":  "/sgd-poc002",
                        "durable":  true,
                        "auto_delete":  false,
@@ -65,6 +132,46 @@
                          "destination":  "document-processing.scan-document.q",
                          "destination_type":  "queue",
                          "routing_key":  "processing.scan-document.v1",
+                         "arguments":  {
+
+                                       }
+                     },
+                     {
+                         "source":  "gd.retry",
+                         "vhost":  "/sgd-poc002",
+                         "destination":  "document-processing.scan-document.retry-5s.q",
+                         "destination_type":  "queue",
+                         "routing_key":  "processing.scan-document.retry.5s",
+                         "arguments":  {
+
+                                       }
+                     },
+                     {
+                         "source":  "gd.retry",
+                         "vhost":  "/sgd-poc002",
+                         "destination":  "document-processing.scan-document.retry-30s.q",
+                         "destination_type":  "queue",
+                         "routing_key":  "processing.scan-document.retry.30s",
+                         "arguments":  {
+
+                                       }
+                     },
+                     {
+                         "source":  "gd.retry",
+                         "vhost":  "/sgd-poc002",
+                         "destination":  "document-processing.scan-document.retry-5m.q",
+                         "destination_type":  "queue",
+                         "routing_key":  "processing.scan-document.retry.5m",
+                         "arguments":  {
+
+                                       }
+                     },
+                     {
+                         "source":  "gd.dead",
+                         "vhost":  "/sgd-poc002",
+                         "destination":  "document-processing.scan-document.dlq",
+                         "destination_type":  "queue",
+                         "routing_key":  "processing.scan-document.dead",
                          "arguments":  {
 
                                        }
