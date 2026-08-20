@@ -256,3 +256,30 @@ Estos hallazgos son oportunidades de mejora que NO impiden desarrollo actual.
 **Estado actual:** 🔴 BLOQUEADO por catálogo + amqplib + esbuild  
 **Después de Fase 1:** 🟢 APTO para POC-001  
 **Después de Fase 2:** 🟢 LÍNEA BASE ALINEADA
+
+---
+
+## Hallazgos POC-002 — PR Readiness
+
+### MIG-TOPO-001 — Cadenas de migración divergentes
+
+| Aspecto | Detalle |
+|---|---|
+| ID | MIG-TOPO-001 |
+| Fecha de detección | 2026-08-20 |
+| Ámbito | POC-002 / PostgreSQL / propiedad de datos / migraciones |
+| Hallazgo | Coexisten una cadena raíz combinada y cadenas separadas para document-core y processing. Fueron creadas inicialmente en el mismo commit pero evolucionaron de forma distinta. |
+| Regla afectada | ADR-011 y ADR-015: propiedad exclusiva de datos y migraciones por servicio. GDP-DAT-002: referencias externas sin FK entre servicios. |
+| Evidencia | El entorno validado utiliza sgd_poc_document_core y sgd_poc_processing por separado. Las cadenas por servicio reproducen ese modelo. La cadena raíz no contiene toda la evolución actual de processing_jobs ni la coordinación claim/lease del outbox. |
+| Impacto | Ejecutar la cadena raíz puede producir un esquema diferente del validado por POC-002 y reintroducir drift o acoplamiento entre dominios. |
+| Severidad | BLOQUEANTE PARA PR |
+| Estado | CERRADO — documentación, limpieza técnica y reconstrucción limpia validadas. |
+| Decisión aplicada | Las únicas cadenas canónicas del POC-002 son migrations/document-core/ y migrations/processing/. |
+| Tratamiento | COMPLETADO: se retiraron las tres migraciones raíz obsoletas y se reconstruyeron bases temporales limpias usando exclusivamente document-core 001→002 y processing 001→004. |
+| Criterio de cierre | CUMPLIDO: documentación revisada; migraciones raíz retiradas; document-core y processing reconstruidas desde cero; tablas, columnas, constraints e índices iguales a live; ausencia de FK cruzada; git diff --check PASS; bases temporales eliminadas. |
+| Relacionado | ADR-011, ADR-015, GDP-DAT-002, GDP-DAT-011, POC-002 |
+| Nota | El commit de9f413 cierra OUTBOX-PUB-001, pero no cierra MIG-TOPO-001. |
+
+MIG-TOPO-001 no introduce una nueva decisión arquitectónica. Registra un incumplimiento detectado respecto de decisiones ya aprobadas y establece evidencia verificable para su cierre.
+
+Evidencia de cierre 2026-08-20: reconstrucción limpia de sgd_poc_mig_topo_001_doc y sgd_poc_mig_topo_001_proc; topología, columnas, constraints e índices equivalentes a las bases live; processing_jobs conserva únicamente FK interna processing_jobs_source_message_fk; policy_version=text; target_object_ref=text NOT NULL; claim/lease completo en ambos outbox; bases temporales eliminadas al finalizar.

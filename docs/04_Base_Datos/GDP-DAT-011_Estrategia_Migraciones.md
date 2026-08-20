@@ -3,7 +3,7 @@
 | Campo | Valor |
 |---|---|
 | Código | GDP-DAT-011 |
-| Versión | 0.1 |
+| Versión | 0.2 |
 | Estado | Borrador; no contiene migraciones productivas |
 | Fecha | 2026-07-16 |
 | Propietario | `[ARQUITECTO_DATOS]` |
@@ -22,6 +22,60 @@ apps/<service>/
 │   └── schema/
 └── src/infrastructure/database/
 ```
+
+## Topología canónica y propiedad de migraciones
+
+La cadena de migraciones es propiedad del macroservicio que posee los datos. Una migración ejecutable debe tener un único propietario y un único destino de base o esquema. No se mantiene una segunda cadena global que replique o combine las migraciones de varios servicios.
+
+### Reglas obligatorias
+
+1. Cada servicio mantiene una sola secuencia canónica de migraciones.
+2. Una migración de un servicio no crea, altera ni elimina tablas propiedad de otro servicio.
+3. No se permiten claves foráneas, joins ni DDL cruzados entre bases de servicios diferentes.
+4. Las referencias a entidades externas se almacenan como identificadores contractuales sin FK entre servicios.
+5. Una migración aplicada no se edita; la evolución se realiza mediante una nueva migración del mismo propietario.
+6. Toda cadena se valida desde una base limpia y, cuando aplique, mediante upgrade desde la versión soportada.
+7. Una ruta duplicada o divergente bloquea la integración hasta su corrección.
+
+### Aplicación en POC-002
+
+Cadena canónica Document Core:
+
+    pocs/poc-002-document-pipeline/migrations/document-core/
+    -> base: sgd_poc_document_core
+    -> propietario: Document Core
+
+Cadena canónica Processing:
+
+    pocs/poc-002-document-pipeline/migrations/processing/
+    -> base: sgd_poc_processing
+    -> propietario: Processing
+
+La base sgd_poc_document_core contiene las tablas propiedad del núcleo documental utilizadas por el POC, incluyendo document_versions y outbox_messages.
+
+La base sgd_poc_processing contiene las tablas propiedad de procesamiento utilizadas por el POC, incluyendo inbox_messages, processing_jobs y outbox_messages.
+
+La ruta histórica pocs/poc-002-document-pipeline/migrations/*.sql no constituye una tercera cadena canónica.
+
+La auditoría MIG-TOPO-001 comprobó que esa ruta combina responsabilidades de ambos servicios y que su evolución diverge de las cadenas propietarias.
+
+La ruta raíz queda clasificada como obsoleta y fuera de uso. Su eliminación física requiere completar primero la reconstrucción limpia, las verificaciones de esquema y las pruebas definidas para cerrar MIG-TOPO-001.
+
+### Prevención de drift
+
+Todo PR que agregue o modifique migraciones debe verificar:
+
+- propietario del esquema;
+- base de datos destino;
+- ausencia de una migración equivalente en otra cadena;
+- ausencia de FK, joins o DDL cruzados;
+- ejecución completa sobre una base limpia;
+- upgrade desde la versión soportada cuando aplique;
+- esquema, constraints e índices finales esperados;
+- pruebas del servicio;
+- evidencia suficiente para auditoría.
+
+Una divergencia entre cadenas ejecutables se considera defecto arquitectónico y bloquea la integración.
 
 ## Ciclo de cambio
 
@@ -76,3 +130,4 @@ Fuentes: ADR-015, GDP-DAT-007/015 y estrategia distribuida. Supuesto: una sola v
 | Versión | Fecha | Cambio | Autor |
 |---|---|---|---|
 | 0.1 | 2026-07-16 | Estrategia independiente por servicio. | Codex |
+| 0.2 | 2026-08-20 | Se formaliza la topología canónica por servicio, la prohibición de cadenas globales duplicadas y los controles preventivos derivados de MIG-TOPO-001 en POC-002. | Antonio José Escrucería Uribe |
