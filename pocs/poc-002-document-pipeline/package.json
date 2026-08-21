@@ -14,11 +14,13 @@
   "dependencies": {
     "amqp-connection-manager": "catalog:",
     "amqplib": "catalog:",
+    "pg": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@types/node": "catalog:",
+    "@types/pg": "catalog:",
     "typescript": "catalog:",
-    "vitest": "catalog:",
-    "@types/node": "catalog:"
+    "vitest": "catalog:"
   }
 }

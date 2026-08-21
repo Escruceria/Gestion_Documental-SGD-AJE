@@ -37,6 +37,7 @@ Los macroservicios requieren SQL tipado y explícito para PostgreSQL, RLS multit
 10. Índices grandes se crean con estrategia de bajo bloqueo cuando corresponda.
 11. Cambios destructivos requieren aprobación, backup y plan de recuperación.
 12. Seeds productivos contienen solo configuración controlada, no datos ficticios.
+13. Cada migración ejecutable pertenece a un único macroservicio. Quedan prohibidas las cadenas globales o paralelas que creen o alteren tablas de varios servicios o dupliquen la evolución de esquemas propietarios.
 
 ## Estructura por servicio
 

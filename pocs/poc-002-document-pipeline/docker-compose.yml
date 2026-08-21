@@ -1,0 +1,62 @@
+name: sgd-poc002-document-pipeline
+
+services:
+  postgres:
+    image: postgres:18.4-alpine
+    container_name: sgd-poc002-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: sgd_poc_document_pipeline
+      POSTGRES_USER: sgd_poc
+      POSTGRES_PASSWORD: ${POC_POSTGRES_PASSWORD}
+
+    ports:
+      - "5434:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U sgd_poc -d sgd_poc_document_pipeline
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
+  rabbitmq:
+    image: rabbitmq:4.3.4-management-alpine
+    container_name: sgd-poc002-rabbitmq
+    user: "100:101"
+    restart: unless-stopped
+
+    environment:
+      RABBITMQ_DEFAULT_USER: sgd_poc
+      RABBITMQ_DEFAULT_PASS: ${POC_RABBITMQ_PASSWORD}
+      RABBITMQ_DEFAULT_VHOST: /sgd-poc002
+
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+
+    healthcheck:
+      test:
+        - CMD
+        - rabbitmq-diagnostics
+        - -q
+        - ping
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+volumes:
+  postgres_data:
+  rabbitmq_data:
