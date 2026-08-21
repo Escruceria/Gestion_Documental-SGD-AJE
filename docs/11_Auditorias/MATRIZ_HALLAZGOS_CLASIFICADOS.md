@@ -283,3 +283,24 @@ Estos hallazgos son oportunidades de mejora que NO impiden desarrollo actual.
 MIG-TOPO-001 no introduce una nueva decisión arquitectónica. Registra un incumplimiento detectado respecto de decisiones ya aprobadas y establece evidencia verificable para su cierre.
 
 Evidencia de cierre 2026-08-20: reconstrucción limpia de sgd_poc_mig_topo_001_doc y sgd_poc_mig_topo_001_proc; topología, columnas, constraints e índices equivalentes a las bases live; processing_jobs conserva únicamente FK interna processing_jobs_source_message_fk; policy_version=text; target_object_ref=text NOT NULL; claim/lease completo en ambos outbox; bases temporales eliminadas al finalizar.
+
+### RABBIT-BOOT-001 — Topología RabbitMQ no reproducible en arranque limpio
+
+| Aspecto | Detalle |
+|---|---|
+| ID | RABBIT-BOOT-001 |
+| Fecha de detección | 2026-08-21 |
+| Ámbito | POC-002 / RabbitMQ / bootstrap / reproducibilidad de infraestructura |
+| Hallazgo | `rabbitmq/definitions.json` estaba versionado, pero `docker-compose.yml` no lo montaba ni configuraba su importación automática. Un entorno con volumen persistente previamente aprovisionado podía ocultar esta ausencia y no garantizaba reproducibilidad desde cero. |
+| Regla afectada | ADR-021: exchanges, colas, bindings y políticas deben aprovisionarse mediante IaC o procedimiento administrativo versionado. |
+| Evidencia | La auditoría inicial comprobó que Compose no referenciaba `definitions.json`. Posteriormente se validó un nodo RabbitMQ completamente limpio, con volumen temporal nuevo, importación local de definiciones y usuario explícito `100:101`. |
+| Impacto | Un despliegue limpio podía iniciar RabbitMQ sin la topología requerida por POC-002, impidiendo publicación, consumo, retries y DLQ conforme a los contratos implementados. |
+| Severidad | BLOQUEANTE PARA PR |
+| Estado | CERRADO — bootstrap declarativo y arranque limpio validados técnicamente. |
+| Decisión aplicada | POC-002 monta `rabbitmq.conf` y `definitions.json` como solo lectura; RabbitMQ importa las definiciones desde filesystem durante el arranque; el contenedor declara `user: "100:101"` para garantizar creación legible del Erlang cookie en el runtime validado. |
+| Tratamiento | COMPLETADO: se agregó `rabbitmq.conf` con `definitions.import_backend = local_filesystem`, `definitions.local.path = /etc/rabbitmq/definitions.json` y `definitions.skip_if_unchanged = true`; Compose monta configuración y definiciones y declara el usuario efectivo validado. |
+| Criterio de cierre | CUMPLIDO: nodo limpio alcanzó READY; cookie `uid=100 gid=101 mode=400`; 4 exchanges, 6 queues y 6 bindings importados; retry TTL 5s/30s/5m y DLX/DLRK verificados; recursos temporales eliminados; worktree permaneció controlado. |
+| Relacionado | ADR-021, POC-002, `docker-compose.yml`, `rabbitmq/rabbitmq.conf`, `rabbitmq/definitions.json` |
+| Nota | No introduce una nueva decisión arquitectónica. Corrige la implementación del POC para cumplir el aprovisionamiento versionado ya establecido por ADR-021. |
+
+Evidencia de cierre 2026-08-21: bootstrap realizado contra un volumen RabbitMQ temporal completamente nuevo; broker READY; `gd.events`, `gd.commands`, `gd.retry` y `gd.dead` presentes; seis colas quorum requeridas presentes; seis bindings requeridos presentes; TTL/DLX/DLRK de retry verificados; `.erlang.cookie` creado con propietario `100:101` y modo `400`; contenedor y volumen temporales eliminados.
